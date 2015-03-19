@@ -47,6 +47,12 @@ public class TestJava extends Test {
         x2s("[\\u00e0-\\u00e5]", "\u00c2", 0, 2, Option.IGNORECASE);
         x2s("[\\u00e2]", "\u00c2", 0, 2, Option.IGNORECASE);
         x2s("\\u00e2", "\u00c2", 0, 2, Option.IGNORECASE);
+
+        // test \pL, one character char class without curly braces
+        x2s("\\pL", "A", 0, 1);
+        ns("\\PL", "A");
+        ns("\\pL", "0");
+        x2s("\\PL", "0", 0, 1);
     }
 
     public static void main(String[] args) throws Throwable {
