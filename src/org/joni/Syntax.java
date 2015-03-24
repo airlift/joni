@@ -533,7 +533,8 @@ public final class Syntax implements SyntaxProperties{
     public static final Syntax Java = new Syntax(
         (( GNU_REGEX_OP | OP_QMARK_NON_GREEDY |
         OP_ESC_CONTROL_CHARS | OP_ESC_C_CONTROL |
-        OP_ESC_OCTAL3 | OP_ESC_X_HEX2 )
+        OP_ESC_OCTAL3 | OP_ESC_X_HEX2 |
+        OP_ESC_X_BRACE_HEX8)
         & ~OP_ESC_LTGT_WORD_BEGIN_END ),
 
         ( OP2_ESC_CAPITAL_Q_QUOTE | OP2_QMARK_GROUP_EFFECT |
