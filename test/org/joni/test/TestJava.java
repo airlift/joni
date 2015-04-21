@@ -21,8 +21,11 @@ package org.joni.test;
 
 import org.jcodings.Encoding;
 import org.jcodings.specific.UTF8Encoding;
+import org.joni.Config;
 import org.joni.Option;
+import org.joni.Regex;
 import org.joni.Syntax;
+import org.joni.exception.JOniException;
 
 public class TestJava extends Test {
 
@@ -47,6 +50,27 @@ public class TestJava extends Test {
         x2s("[\\u00e0-\\u00e5]", "\u00c2", 0, 2, Option.IGNORECASE);
         x2s("[\\u00e2]", "\u00c2", 0, 2, Option.IGNORECASE);
         x2s("\\u00e2", "\u00c2", 0, 2, Option.IGNORECASE);
+
+        // test invalid utf8 escape sequence does not loop infinitely
+        fail("\\uD800".getBytes(), "\uD800".getBytes(), Option.DEFAULT);
+
+    }
+
+    private void fail(byte[] pattern, byte[] str, int option) {
+        try {
+            Regex reg = new Regex(pattern, 0, length(pattern), option, encoding(), syntax());
+        } catch (JOniException je) {
+            nsucc++;
+            return;
+        } catch (Exception e) {
+            Config.err.println("Pattern: " + repr(pattern) + " Str: " + repr(str));
+            e.printStackTrace(Config.err);
+            Config.err.println("SEVERE ERROR: " + e.getMessage());
+            nerror++;
+            return;
+        }
+        Config.log.println("FAIL: /" + repr(pattern) + "/ '" + repr(str) + "'");
+        nfail++;
     }
 
     public static void main(String[] args) throws Throwable {
