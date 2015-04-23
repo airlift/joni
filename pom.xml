@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.jruby.joni</groupId>
+  <groupId>io.airlift</groupId>
   <artifactId>joni</artifactId>
   <packaging>jar</packaging>
-  <version>2.1.6-SNAPSHOT</version>
+  <version>2.1.5.1-SNAPSHOT</version>
   <name>Joni</name>
   <description>
     Java port of Oniguruma: http://www.geocities.jp/kosako3/oniguruma
@@ -21,15 +21,10 @@
     <version>7</version>
   </parent>
 
-  <issueManagement>
-    <system>JIRA</system>
-    <url>http://jira.codehaus.org/browse/JRUBY</url>
-  </issueManagement>
-
   <scm>
-    <connection>scm:git:https://github.com/jruby/joni.git</connection>
-    <developerConnection>scm:git:git@github.com:jruby/joni.git</developerConnection>
-    <url>https://github.com/jruby/joni</url>
+    <connection>scm:git:https://github.com/airlift/joni.git</connection>
+    <developerConnection>scm:git:git@github.com:airlift/joni.git</developerConnection>
+    <url>https://github.com/airlift/joni</url>
   </scm>
 
   <licenses>
@@ -64,9 +59,9 @@
 
   <dependencies>
     <dependency>
-       <groupId>org.jruby.jcodings</groupId>
-       <artifactId>jcodings</artifactId>
-       <version>1.0.12</version>
+       <groupId>io.airlift</groupId>
+       <artifactId>jcodings-internal</artifactId>
+       <version>1.0.12.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -78,7 +73,6 @@
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
       <version>5.0.3</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
 
@@ -114,6 +108,18 @@
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.2</version>
+        <executions>
+          <execution>
+            <id>empty-javadoc-jar</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>javadoc</classifier>
+              <classesDirectory>${project.basedir}/javadoc</classesDirectory>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -122,7 +128,6 @@
         <executions>
           <execution>
             <id>attach-sources</id>
-            <phase>verify</phase>
             <goals>
               <goal>jar-no-fork</goal>
             </goals>
@@ -134,19 +139,59 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.8.1</version>
         <configuration>
-          <show>private</show>
-          <nohelp>true</nohelp>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <createSourcesJar>true</createSourcesJar>
+          <shadeSourcesContent>true</shadeSourcesContent>
+          <dependencyReducedPomLocation>${project.build.directory}/pom.xml</dependencyReducedPomLocation>
+          <relocations>
+            <relocation>
+              <pattern>org.joni</pattern>
+              <shadedPattern>io.airlift.joni</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>org.jcodings</pattern>
+              <shadedPattern>io.airlift.jcodings</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>org.objectweb.asm</pattern>
+              <shadedPattern>io.airlift.joni.\$internal.asm</shadedPattern>
+            </relocation>
+          </relocations>
         </configuration>
         <executions>
           <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
+            <phase>package</phase>
             <goals>
-              <goal>jar</goal>
+              <goal>shade</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.2</version>
+          <configuration>
+            <pushChanges>false</pushChanges>
+            <localCheckout>true</localCheckout>
+            <tagNameFormat>@{project.version}</tagNameFormat>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <configuration>
+            <useAgent>true</useAgent>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 </project>
