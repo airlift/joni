@@ -114,11 +114,6 @@
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <version>2.2</version>
-        <configuration>
-          <archive>
-            <manifestFile>MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
