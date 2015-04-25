@@ -61,7 +61,7 @@
     <dependency>
        <groupId>io.airlift</groupId>
        <artifactId>jcodings-internal</artifactId>
-       <version>1.0.12.1-SNAPSHOT</version>
+       <version>1.0.12.1</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
