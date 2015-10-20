@@ -82,6 +82,8 @@ public class TestU8 extends Test {
         x2s("(?i:\\!\\[CDAb)", "\\![CDAb", 1, 7);
         ns("x.*\\b", "x");
         x2s("x.*\\B", "x", 0, 1);
+
+        x2s("foo\\b", "foo", 0, 3);
     }
 
     public static void main(String[] args) throws Throwable {
